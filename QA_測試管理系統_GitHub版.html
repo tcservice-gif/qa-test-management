@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA 測試管理系統 - 協作版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .collaboration-banner {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .main-content {
+            padding: 30px;
+        }
+        
+        .sync-section {
+            background: #e3f2fd;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #bbdefb;
+        }
+        
+        .sync-section h3 {
+            color: #1976d2;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .sync-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .sync-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .sync-btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        
+        .sync-btn.success {
+            background: #28a745;
+        }
+        
+        .sync-btn.warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .sync-btn.danger {
+            background: #dc3545;
+        }
+        
+        .status-indicator {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #007bff;
+        }
+        
+        .status-indicator.success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .status-indicator.warning {
+            border-left-color: #ffc107;
+            background: #fff3cd;
+        }
+        
+        .status-indicator.error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .github-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .github-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .github-instructions {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .github-instructions h4 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+        
+        .github-instructions ol {
+            margin-left: 20px;
+            color: #6c757d;
+        }
+        
+        .github-instructions li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        
+        .search-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .search-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .search-input {
+            flex: 1;
+            min-width: 300px;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+        
+        .search-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .search-btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        
+        .filter-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #495057;
+        }
+        
+        .filter-group select {
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .add-rule-section {
+            background: #e3f2fd;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #bbdefb;
+        }
+        
+        .add-rule-section h3 {
+            color: #1976d2;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .add-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .add-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        
+        .rules-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .rules-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .rule-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .rule-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .rule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .rule-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .rule-category {
+            background: #007bff;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .rule-category.internal { background: #6f42c1; }
+        .rule-category.ui { background: #28a745; }
+        .rule-category.functional { background: #17a2b8; }
+        .rule-category.other { background: #6c757d; }
+        
+        .rule-description {
+            color: #6c757d;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .rule-details {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .rule-details h4 {
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+        
+        .rule-details ul {
+            margin-left: 20px;
+            color: #6c757d;
+        }
+        
+        .rule-details li {
+            margin-bottom: 5px;
+        }
+        
+        .rule-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .edit-btn {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .edit-btn:hover {
+            background: #e0a800;
+        }
+        
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .delete-btn:hover {
+            background: #c82333;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-size: 1.1em;
+        }
+        
+        .stats-section {
+            background: #e3f2fd;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #bbdefb;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 1em;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .modal-header h3 {
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        @media (max-width: 768px) {
+            .search-bar {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                min-width: 100%;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .rules-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .sync-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 QA 測試管理系統 - 協作版</h1>
+            <p>支援團隊協作的測試規則管理系統</p>
+        </div>
+        
+        <div class="collaboration-banner">
+            🤝 協作功能：支援團隊成員同時編輯和同步數據
+        </div>
+        
+        <div class="main-content">
+            
+            <!-- 同步功能 -->
+            <div class="sync-section">
+                <h3>🔄 數據同步</h3>
+                <div class="sync-buttons">
+                    <button class="sync-btn" onclick="downloadData()">📥 下載最新數據</button>
+                    <button class="sync-btn success" onclick="uploadData()">📤 上傳變更</button>
+                    <button class="sync-btn warning" onclick="checkForUpdates()">🔍 檢查更新</button>
+                    <button class="sync-btn danger" onclick="clearLocalData()">🗑️ 清除本地數據</button>
+                </div>
+                <div id="syncStatus" class="status-indicator" style="display: none;">
+                    <!-- 同步狀態將由JavaScript動態生成 -->
+                </div>
+            </div>
+            
+            <!-- 統計區域 -->
+            <div class="stats-section">
+                <h3>📊 系統統計</h3>
+                <div class="stats-grid" id="statsGrid">
+                    <!-- 統計數據將由JavaScript動態生成 -->
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="action-btn edit-btn" onclick="exportData()" style="margin-right: 10px;">📤 匯出數據</button>
+                    <button class="action-btn delete-btn" onclick="clearAllData()">🗑️ 清除所有數據</button>
+                </div>
+            </div>
+            
+            <!-- 搜尋區域 -->
+            <div class="search-section">
+                <h3>🔍 搜尋測試規則</h3>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" class="search-input" placeholder="輸入關鍵字搜尋測試規則...">
+                    <button class="search-btn" onclick="searchRules()">搜尋</button>
+                </div>
+                <div class="filter-section">
+                    <div class="filter-group">
+                        <label>分類篩選</label>
+                        <select id="categoryFilter">
+                            <option value="">全部分類</option>
+                            <option value="internal">內部測試</option>
+                            <option value="ui">UI測試</option>
+                            <option value="functional">功能測試</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>優先級篩選</label>
+                        <select id="priorityFilter">
+                            <option value="">全部優先級</option>
+                            <option value="high">高</option>
+                            <option value="medium">中</option>
+                            <option value="low">低</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>狀態篩選</label>
+                        <select id="statusFilter">
+                            <option value="">全部狀態</option>
+                            <option value="active">啟用</option>
+                            <option value="inactive">停用</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 新增規則區域 -->
+            <div class="add-rule-section">
+                <h3>➕ 新增測試規則</h3>
+                <form id="addRuleForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>規則名稱 *</label>
+                            <input type="text" id="ruleName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>分類 *</label>
+                            <select id="ruleCategory" required>
+                                <option value="">選擇分類</option>
+                                <option value="internal">內部測試</option>
+                                <option value="ui">UI測試</option>
+                                <option value="functional">功能測試</option>
+                                <option value="other">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>優先級 *</label>
+                            <select id="rulePriority" required>
+                                <option value="">選擇優先級</option>
+                                <option value="high">高</option>
+                                <option value="medium">中</option>
+                                <option value="low">低</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>狀態</label>
+                            <select id="ruleStatus">
+                                <option value="active">啟用</option>
+                                <option value="inactive">停用</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>規則描述 *</label>
+                        <textarea id="ruleDescription" required placeholder="詳細描述測試規則..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>測試步驟</label>
+                        <textarea id="ruleSteps" placeholder="列出具體的測試步驟..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>預期結果</label>
+                        <textarea id="ruleExpected" placeholder="描述預期的測試結果..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>備註</label>
+                        <textarea id="ruleNotes" placeholder="其他備註資訊..."></textarea>
+                    </div>
+                    <button type="submit" class="add-btn">新增規則</button>
+                </form>
+            </div>
+            
+            <!-- 規則列表區域 -->
+            <div class="rules-section">
+                <h3>📋 測試規則列表</h3>
+                <div class="rules-grid" id="rulesGrid">
+                    <!-- 規則卡片將由JavaScript動態生成 -->
+                </div>
+                <div class="no-results" id="noResults" style="display: none;">
+                    <p>🔍 沒有找到符合條件的測試規則</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 編輯規則模態框 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✏️ 編輯測試規則</h3>
+                <span class="close" onclick="closeEditModal()">&times;</span>
+            </div>
+            <form id="editRuleForm">
+                <input type="hidden" id="editRuleId">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>規則名稱 *</label>
+                        <input type="text" id="editRuleName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>分類 *</label>
+                        <select id="editRuleCategory" required>
+                            <option value="internal">內部測試</option>
+                            <option value="ui">UI測試</option>
+                            <option value="functional">功能測試</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>優先級 *</label>
+                        <select id="editRulePriority" required>
+                            <option value="high">高</option>
+                            <option value="medium">中</option>
+                            <option value="low">低</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>狀態</label>
+                        <select id="editRuleStatus">
+                            <option value="active">啟用</option>
+                            <option value="inactive">停用</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>規則描述 *</label>
+                    <textarea id="editRuleDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>測試步驟</label>
+                    <textarea id="editRuleSteps"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>預期結果</label>
+                    <textarea id="editRuleExpected"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>備註</label>
+                    <textarea id="editRuleNotes"></textarea>
+                </div>
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="action-btn edit-btn" onclick="closeEditModal()">取消</button>
+                    <button type="submit" class="action-btn add-btn">儲存變更</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 測試規則數據
+        let testRules = [];
+        let nextId = 1;
+        let lastSyncTime = null;
+        
+        // 從localStorage載入數據
+        function loadData() {
+            const savedRules = localStorage.getItem('qaTestRules');
+            const savedNextId = localStorage.getItem('qaNextId');
+            const savedSyncTime = localStorage.getItem('qaLastSyncTime');
+            
+            if (savedRules) {
+                testRules = JSON.parse(savedRules);
+            } else {
+                // 如果沒有保存的數據，使用預設範例
+                testRules = [
+                    {
+                        id: 1,
+                        name: "登入功能測試",
+                        category: "functional",
+                        priority: "high",
+                        status: "active",
+                        description: "測試用戶登入功能是否正常運作",
+                        steps: "1. 開啟登入頁面\n2. 輸入有效帳號密碼\n3. 點擊登入按鈕\n4. 驗證登入成功",
+                        expected: "用戶成功登入並跳轉到主頁面",
+                        notes: "需要測試多種登入方式",
+                        createdAt: new Date().toISOString(),
+                        lastModified: new Date().toISOString(),
+                        modifiedBy: "系統"
+                    },
+                    {
+                        id: 2,
+                        name: "按鈕點擊測試",
+                        category: "ui",
+                        priority: "medium",
+                        status: "active",
+                        description: "測試按鈕點擊功能是否正常",
+                        steps: "1. 找到目標按鈕\n2. 點擊按鈕\n3. 驗證按鈕回應",
+                        expected: "按鈕正常回應並執行相應功能",
+                        notes: "測試各種按鈕狀態",
+                        createdAt: new Date().toISOString(),
+                        lastModified: new Date().toISOString(),
+                        modifiedBy: "系統"
+                    },
+                    {
+                        id: 3,
+                        name: "內部系統整合測試",
+                        category: "internal",
+                        priority: "high",
+                        status: "active",
+                        description: "測試內部系統間的整合功能",
+                        steps: "1. 登入內部系統\n2. 執行整合功能\n3. 檢查數據同步",
+                        expected: "系統間數據同步正常",
+                        notes: "僅限內部人員測試",
+                        createdAt: new Date().toISOString(),
+                        lastModified: new Date().toISOString(),
+                        modifiedBy: "系統"
+                    }
+                ];
+                nextId = 4;
+            }
+            
+            if (savedNextId) {
+                nextId = parseInt(savedNextId);
+            }
+            
+            if (savedSyncTime) {
+                lastSyncTime = savedSyncTime;
+            }
+        }
+        
+        // 保存數據到localStorage
+        function saveData() {
+            localStorage.setItem('qaTestRules', JSON.stringify(testRules));
+            localStorage.setItem('qaNextId', nextId.toString());
+            localStorage.setItem('qaLastSyncTime', new Date().toISOString());
+        }
+        
+        // 初始化頁面
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            updateStats();
+            displayRules();
+            setupEventListeners();
+            checkForUpdates();
+        });
+        
+        // 設定事件監聽器
+        function setupEventListeners() {
+            document.getElementById('searchInput').addEventListener('input', function() {
+                if (this.value.trim() === '') {
+                    displayRules();
+                }
+            });
+            
+            document.getElementById('categoryFilter').addEventListener('change', filterRules);
+            document.getElementById('priorityFilter').addEventListener('change', filterRules);
+            document.getElementById('statusFilter').addEventListener('change', filterRules);
+            
+            document.getElementById('addRuleForm').addEventListener('submit', addRule);
+            document.getElementById('editRuleForm').addEventListener('submit', updateRule);
+        }
+        
+        // 更新統計數據
+        function updateStats() {
+            const totalRules = testRules.length;
+            const activeRules = testRules.filter(rule => rule.status === 'active').length;
+            const highPriorityRules = testRules.filter(rule => rule.priority === 'high').length;
+            const categories = [...new Set(testRules.map(rule => rule.category))].length;
+            
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-item">
+                    <div class="stat-number">${totalRules}</div>
+                    <div class="stat-label">總規則數</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${activeRules}</div>
+                    <div class="stat-label">啟用規則</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${highPriorityRules}</div>
+                    <div class="stat-label">高優先級</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${categories}</div>
+                    <div class="stat-label">分類數量</div>
+                </div>
+            `;
+        }
+        
+        // 顯示規則
+        function displayRules(rules = testRules) {
+            const rulesGrid = document.getElementById('rulesGrid');
+            const noResults = document.getElementById('noResults');
+            
+            if (rules.length === 0) {
+                rulesGrid.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            noResults.style.display = 'none';
+            rulesGrid.innerHTML = rules.map(rule => `
+                <div class="rule-card">
+                    <div class="rule-header">
+                        <div class="rule-title">${rule.name}</div>
+                        <div class="rule-category ${rule.category}">${getCategoryName(rule.category)}</div>
+                    </div>
+                    <div class="rule-description">${rule.description}</div>
+                    <div class="rule-details">
+                        <h4>測試步驟：</h4>
+                        <ul>${rule.steps.split('\n').map(step => `<li>${step}</li>`).join('')}</ul>
+                    </div>
+                    <div class="rule-details">
+                        <h4>預期結果：</h4>
+                        <p>${rule.expected}</p>
+                    </div>
+                    ${rule.notes ? `<div class="rule-details"><h4>備註：</h4><p>${rule.notes}</p></div>` : ''}
+                    <div class="rule-details">
+                        <h4>最後修改：</h4>
+                        <p>${rule.lastModified ? new Date(rule.lastModified).toLocaleString() : '未知'} by ${rule.modifiedBy || '未知'}</p>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="action-btn edit-btn" onclick="editRule(${rule.id})">編輯</button>
+                        <button class="action-btn delete-btn" onclick="deleteRule(${rule.id})">刪除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 搜尋規則
+        function searchRules() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filteredRules = testRules.filter(rule => 
+                rule.name.toLowerCase().includes(searchTerm) ||
+                rule.description.toLowerCase().includes(searchTerm) ||
+                rule.steps.toLowerCase().includes(searchTerm) ||
+                rule.expected.toLowerCase().includes(searchTerm) ||
+                (rule.notes && rule.notes.toLowerCase().includes(searchTerm))
+            );
+            displayRules(filteredRules);
+        }
+        
+        // 篩選規則
+        function filterRules() {
+            const category = document.getElementById('categoryFilter').value;
+            const priority = document.getElementById('priorityFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            
+            let filteredRules = testRules;
+            
+            if (category) {
+                filteredRules = filteredRules.filter(rule => rule.category === category);
+            }
+            
+            if (priority) {
+                filteredRules = filteredRules.filter(rule => rule.priority === priority);
+            }
+            
+            if (status) {
+                filteredRules = filteredRules.filter(rule => rule.status === status);
+            }
+            
+            displayRules(filteredRules);
+        }
+        
+        // 新增規則
+        function addRule(e) {
+            e.preventDefault();
+            
+            const newRule = {
+                id: nextId++,
+                name: document.getElementById('ruleName').value,
+                category: document.getElementById('ruleCategory').value,
+                priority: document.getElementById('rulePriority').value,
+                status: document.getElementById('ruleStatus').value,
+                description: document.getElementById('ruleDescription').value,
+                steps: document.getElementById('ruleSteps').value,
+                expected: document.getElementById('ruleExpected').value,
+                notes: document.getElementById('ruleNotes').value,
+                createdAt: new Date().toISOString(),
+                lastModified: new Date().toISOString(),
+                modifiedBy: prompt('請輸入您的姓名（用於追蹤修改者）：') || '未知'
+            };
+            
+            testRules.push(newRule);
+            saveData();
+            updateStats();
+            displayRules();
+            document.getElementById('addRuleForm').reset();
+            
+            alert('測試規則新增成功！');
+        }
+        
+        // 編輯規則
+        function editRule(id) {
+            const rule = testRules.find(r => r.id === id);
+            if (!rule) return;
+            
+            document.getElementById('editRuleId').value = rule.id;
+            document.getElementById('editRuleName').value = rule.name;
+            document.getElementById('editRuleCategory').value = rule.category;
+            document.getElementById('editRulePriority').value = rule.priority;
+            document.getElementById('editRuleStatus').value = rule.status;
+            document.getElementById('editRuleDescription').value = rule.description;
+            document.getElementById('editRuleSteps').value = rule.steps;
+            document.getElementById('editRuleExpected').value = rule.expected;
+            document.getElementById('editRuleNotes').value = rule.notes;
+            
+            document.getElementById('editModal').style.display = 'block';
+        }
+        
+        // 更新規則
+        function updateRule(e) {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('editRuleId').value);
+            const ruleIndex = testRules.findIndex(r => r.id === id);
+            
+            if (ruleIndex !== -1) {
+                testRules[ruleIndex] = {
+                    ...testRules[ruleIndex],
+                    name: document.getElementById('editRuleName').value,
+                    category: document.getElementById('editRuleCategory').value,
+                    priority: document.getElementById('editRulePriority').value,
+                    status: document.getElementById('editRuleStatus').value,
+                    description: document.getElementById('editRuleDescription').value,
+                    steps: document.getElementById('editRuleSteps').value,
+                    expected: document.getElementById('editRuleExpected').value,
+                    notes: document.getElementById('editRuleNotes').value,
+                    lastModified: new Date().toISOString(),
+                    modifiedBy: prompt('請輸入您的姓名（用於追蹤修改者）：') || '未知'
+                };
+                
+                saveData();
+                updateStats();
+                displayRules();
+                closeEditModal();
+                alert('測試規則更新成功！');
+            }
+        }
+        
+        // 刪除規則
+        function deleteRule(id) {
+            if (confirm('確定要刪除這個測試規則嗎？')) {
+                testRules = testRules.filter(rule => rule.id !== id);
+                saveData();
+                updateStats();
+                displayRules();
+                alert('測試規則刪除成功！');
+            }
+        }
+        
+        // 關閉編輯模態框
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+        
+        // 獲取分類名稱
+        function getCategoryName(category) {
+            const categoryNames = {
+                'internal': '內部測試',
+                'ui': 'UI測試',
+                'functional': '功能測試',
+                'other': '其他'
+            };
+            return categoryNames[category] || category;
+        }
+        
+        // 下載數據
+        function downloadData() {
+            const data = {
+                testRules: testRules,
+                nextId: nextId,
+                downloadDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `QA測試規則_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            showSyncStatus('success', '數據下載成功！');
+        }
+        
+        // 上傳數據
+        function uploadData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            if (data.testRules && Array.isArray(data.testRules)) {
+                                testRules = data.testRules;
+                                nextId = data.nextId || testRules.length + 1;
+                                saveData();
+                                updateStats();
+                                displayRules();
+                                showSyncStatus('success', '數據上傳成功！');
+                            } else {
+                                showSyncStatus('error', '數據格式不正確！');
+                            }
+                        } catch (error) {
+                            showSyncStatus('error', '上傳失敗：' + error.message);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+        
+        // 檢查更新
+        function checkForUpdates() {
+            showSyncStatus('warning', '檢查更新中...');
+            // 這裡可以添加實際的更新檢查邏輯
+            setTimeout(() => {
+                showSyncStatus('success', '已是最新版本！');
+            }, 1000);
+        }
+        
+        // 清除本地數據
+        function clearLocalData() {
+            if (confirm('確定要清除本地數據嗎？')) {
+                localStorage.removeItem('qaTestRules');
+                localStorage.removeItem('qaNextId');
+                localStorage.removeItem('qaLastSyncTime');
+                loadData();
+                updateStats();
+                displayRules();
+                showSyncStatus('success', '本地數據已清除！');
+            }
+        }
+        
+        // 顯示同步狀態
+        function showSyncStatus(type, message) {
+            const statusDiv = document.getElementById('syncStatus');
+            statusDiv.className = `status-indicator ${type}`;
+            statusDiv.innerHTML = `
+                <strong>${type === 'success' ? '✅' : type === 'warning' ? '⚠️' : '❌'}</strong>
+                ${message}
+            `;
+            statusDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 匯出數據
+        function exportData() {
+            const data = {
+                testRules: testRules,
+                nextId: nextId,
+                exportDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `QA測試規則_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            alert('數據匯出成功！');
+        }
+        
+        // 清除所有數據
+        function clearAllData() {
+            if (confirm('確定要清除所有數據嗎？此操作無法復原！')) {
+                if (confirm('再次確認：您真的要刪除所有測試規則嗎？')) {
+                    testRules = [];
+                    nextId = 1;
+                    localStorage.removeItem('qaTestRules');
+                    localStorage.removeItem('qaNextId');
+                    localStorage.removeItem('qaLastSyncTime');
+                    updateStats();
+                    displayRules();
+                    alert('所有數據已清除！');
+                }
+            }
+        }
+        
+        // 點擊模態框外部關閉
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
+    </script>
+</body>
+</html>
