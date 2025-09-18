@@ -1738,6 +1738,23 @@
                 closeEditModal();
             }
         }
-    </script>
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+  // 移除「優先級篩選」
+  var pf = document.getElementById('priorityFilter');
+  if (pf && pf.closest('.filter-group')) pf.closest('.filter-group').remove();
+
+  // 移除「新增/編輯表單」的優先級欄位
+  var rp = document.getElementById('rulePriority');
+  if (rp && rp.closest('.form-group')) rp.closest('.form-group').remove();
+  var erp = document.getElementById('editRulePriority');
+  if (erp && erp.closest('.form-group')) erp.closest('.form-group').remove();
+
+  // 移除統計卡片中的「高優先級」
+  Array.from(document.querySelectorAll('.stats-grid .stat-item')).forEach(function (item) {
+    if (item.textContent.includes('高優先級')) item.remove();
+  });
+});
+</script>
 </body>
 </html>
