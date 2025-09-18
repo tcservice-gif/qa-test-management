@@ -1738,23 +1738,44 @@
                 closeEditModal();
             }
         }
-    <script>
-document.addEventListener('DOMContentLoaded', function () {
-  // 移除「優先級篩選」
-  var pf = document.getElementById('priorityFilter');
+  <script>
+// 先用 CSS 隱藏，避免閃爍
+const style = document.createElement('style');
+style.textContent = `
+  #priorityFilter, #rulePriority, #editRulePriority { display: none !important; }
+`;
+document.head.appendChild(style);
+
+function removePriorityUI() {
+  // 優先級篩選
+  const pf = document.getElementById('priorityFilter');
   if (pf && pf.closest('.filter-group')) pf.closest('.filter-group').remove();
 
-  // 移除「新增/編輯表單」的優先級欄位
-  var rp = document.getElementById('rulePriority');
+  // 新增/編輯表單的優先級欄位
+  const rp  = document.getElementById('rulePriority');
   if (rp && rp.closest('.form-group')) rp.closest('.form-group').remove();
-  var erp = document.getElementById('editRulePriority');
+  const erp = document.getElementById('editRulePriority');
   if (erp && erp.closest('.form-group')) erp.closest('.form-group').remove();
 
-  // 移除統計卡片中的「高優先級」
-  Array.from(document.querySelectorAll('.stats-grid .stat-item')).forEach(function (item) {
+  // 統計卡片的「高優先級」
+  document.querySelectorAll('.stats-grid .stat-item').forEach(item => {
     if (item.textContent.includes('高優先級')) item.remove();
   });
-});
+}
+
+// 先跑一次
+removePriorityUI();
+
+// 監聽 DOM 動態變化（包含之後渲染的內容）
+const mo = new MutationObserver(() => removePriorityUI());
+mo.observe(document.body, { childList: true, subtree: true });
+
+// 保底：延遲再跑幾次（避免極端情況）
+let tries = 0;
+const t = setInterval(() => {
+  removePriorityUI();
+  if (++tries >= 10) clearInterval(t);
+}, 300);
 </script>
 </body>
 </html>
