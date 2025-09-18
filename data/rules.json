@@ -10,53 +10,33 @@
       "steps": "1. 開啟登入頁面\n2. 輸入有效帳號密碼\n3. 點擊登入按鈕\n4. 驗證登入成功",
       "expected": "用戶成功登入並跳轉到主頁面",
       "notes": "需要測試多種登入方式",
-      "createdAt": "2025-09-18T07:10:43.772Z",
-      "lastModified": "2025-09-18T07:10:43.773Z",
-      "modifiedBy": "系統"
+      "createdAt": "2025-09-04T07:15:49.885Z"
     },
     {
       "id": 2,
-      "name": "按鈕點擊測試",
-      "category": "ui",
+      "name": "API回應時間測試",
+      "category": "performance",
       "priority": "medium",
       "status": "active",
-      "description": "測試按鈕點擊功能是否正常",
-      "steps": "1. 找到目標按鈕\n2. 點擊按鈕\n3. 驗證按鈕回應",
-      "expected": "按鈕正常回應並執行相應功能",
-      "notes": "測試各種按鈕狀態",
-      "createdAt": "2025-09-18T07:10:43.773Z",
-      "lastModified": "2025-09-18T07:10:43.773Z",
-      "modifiedBy": "系統"
-    },
-    {
-      "id": 3,
-      "name": "內部系統整合測試",
-      "category": "internal",
-      "priority": "high",
-      "status": "active",
-      "description": "測試內部系統間的整合功能",
-      "steps": "1. 登入內部系統\n2. 執行整合功能\n3. 檢查數據同步",
-      "expected": "系統間數據同步正常",
-      "notes": "僅限內部人員測試",
-      "createdAt": "2025-09-18T07:10:43.773Z",
-      "lastModified": "2025-09-18T07:10:43.773Z",
-      "modifiedBy": "系統"
+      "description": "測試API回應時間是否符合要求",
+      "steps": "1. 發送API請求\n2. 記錄回應時間\n3. 驗證是否在3秒內回應",
+      "expected": "API回應時間小於3秒",
+      "notes": "使用壓力測試工具",
+      "createdAt": "2025-09-04T07:15:49.885Z"
     },
     {
       "id": 4,
-      "name": "[工程優化] 管理端_帳號權限功能：新增提示語",
-      "category": "internal",
-      "priority": "low",
+      "name": "會無法輸入註冊，需要調整成跟正式站一樣的數字驗證",
+      "category": "functional",
+      "priority": "medium",
       "status": "active",
-      "description": "功能路徑：[管理端] 程式系統 > 權限管理 > 帳號權限\n頁面中新增功能說明，以避免操作者不知為何會授權失敗的情況。",
-      "steps": "因該單號有對應的多語系名稱，因此各市場後台皆須測試\n英文、馬來文、泰文、越南文、印尼市場",
-      "expected": "每個語系皆加上說明文字",
+      "description": "會無法輸入註冊，需要調整成跟正式站一樣的數字驗證",
+      "steps": "",
+      "expected": "",
       "notes": "",
-      "createdAt": "2025-09-18T07:21:42.423Z",
-      "lastModified": "2025-09-18T07:21:42.423Z",
-      "modifiedBy": "wendy"
+      "createdAt": "2025-09-04T07:16:37.206Z"
     }
   ],
   "nextId": 5,
-  "exportDate": "2025-09-18T07:22:48.774Z"
+  "exportDate": "2025-09-18T09:05:18.507Z"
 }
