@@ -748,20 +748,7 @@
                     }
                 ];
                 nextId = 4;
-            // 一次性遷移：把舊資料的功能測試(functional) 改為 其他(other)
-if (Array.isArray(testRules)) {
-  let changed = false;
-  testRules.forEach(rule => {
-    if (rule && rule.category === 'functional') {
-      rule.category = 'other'; // 若要改成「測試注意事項」，把 'other' 改成 'internal'
-      changed = true;
-    }
-  });
-  if (changed) {
-    saveData(); // 寫回 localStorage
-  }
-}
-            
+             } 
             if (savedNextId) {
                 nextId = parseInt(savedNextId);
             }
