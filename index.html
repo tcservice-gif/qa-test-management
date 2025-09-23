@@ -331,7 +331,6 @@
         
         .rule-category.internal { background: #6f42c1; }
         .rule-category.ui { background: #28a745; }
-        .rule-category.functional { background: #17a2b8; }
         .rule-category.other { background: #6c757d; }
         
         .rule-description {
@@ -564,7 +563,6 @@
                             <option value="">全部分類</option>
                             <option value="internal">內部測試注意事項</option>
                             <option value="ui">UI測試</option>
-                            <option value="functional">功能測試</option>
                             <option value="other">其他</option>
                         </select>
                     </div>
@@ -594,7 +592,6 @@
                                 <option value="">選擇分類</option>
                                 <option value="internal">內部測試注意事項</option>
                                 <option value="ui">UI測試</option>
-                                <option value="functional">功能測試</option>
                                 <option value="other">其他</option>
                             </select>
                         </div>
@@ -658,7 +655,6 @@
                         <select id="editRuleCategory" required>
                             <option value="internal">內部測試注意事項</option>
                             <option value="ui">UI測試</option>
-                            <option value="functional">功能測試</option>
                             <option value="other">其他</option>
                         </select>
                     </div>
@@ -752,7 +748,19 @@
                     }
                 ];
                 nextId = 4;
-            }
+            // 一次性遷移：把舊資料的功能測試(functional) 改為 其他(other)
+if (Array.isArray(testRules)) {
+  let changed = false;
+  testRules.forEach(rule => {
+    if (rule && rule.category === 'functional') {
+      rule.category = 'other'; // 若要改成「測試注意事項」，把 'other' 改成 'internal'
+      changed = true;
+    }
+  });
+  if (changed) {
+    saveData(); // 寫回 localStorage
+  }
+}
             
             if (savedNextId) {
                 nextId = parseInt(savedNextId);
@@ -981,7 +989,6 @@
             const categoryNames = {
                 'internal': '內部測試注意事項',
                 'ui': 'UI測試',
-                'functional': '功能測試',
                 'other': '其他'
             };
             return categoryNames[category] || category;
