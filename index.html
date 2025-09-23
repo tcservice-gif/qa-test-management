@@ -554,7 +554,7 @@
                 <h3>🔍 搜尋測試規則</h3>
                 <div class="search-bar">
                     <input type="text" id="searchInput" class="search-input" placeholder="輸入關鍵字搜尋測試規則...">
-                    <button class="search-btn" onclick="searchRules()">搜尋</button>
+                    <button class="search-btn">搜尋</button>
                 </div>
                 <div class="filter-section">
                     <div class="filter-group">
@@ -769,22 +769,28 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
             updateStats();
-            displayRules();
+            applyFilters(); // 初次依目前搜尋與篩選值渲染
             setupEventListeners();
             checkForUpdates();
         });
         
-        // 設定事件監聽器
+        // 設定事件監聽器（統一用 applyFilters）
         function setupEventListeners() {
-            document.getElementById('searchInput').addEventListener('input', function() {
-                if (this.value.trim() === '') {
-                    displayRules();
-                }
-            });
-            
-            document.getElementById('categoryFilter').addEventListener('change', filterRules);
-            document.getElementById('statusFilter').addEventListener('change', filterRules);
-            
+            const searchInput = document.getElementById('searchInput');
+            const categoryFilterEl = document.getElementById('categoryFilter');
+            const statusFilterEl = document.getElementById('statusFilter');
+
+            searchInput.addEventListener('input', applyFilters);
+            categoryFilterEl.addEventListener('change', applyFilters);
+            statusFilterEl.addEventListener('change', applyFilters);
+
+            const searchBtn = document.querySelector('.search-btn');
+            if (searchBtn) {
+                searchBtn.addEventListener('click', function () {
+                    applyFilters();
+                });
+            }
+
             document.getElementById('addRuleForm').addEventListener('submit', addRule);
             document.getElementById('editRuleForm').addEventListener('submit', updateRule);
         }
@@ -851,35 +857,40 @@
             `).join('');
         }
         
-        // 搜尋規則
-        function searchRules() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filteredRules = testRules.filter(rule => 
-                rule.name.toLowerCase().includes(searchTerm) ||
-                rule.description.toLowerCase().includes(searchTerm) ||
-                rule.steps.toLowerCase().includes(searchTerm) ||
-                rule.expected.toLowerCase().includes(searchTerm) ||
-                (rule.notes && rule.notes.toLowerCase().includes(searchTerm))
-            );
-            displayRules(filteredRules);
-        }
-        
-        // 篩選規則
-        function filterRules() {
+        // 合併搜尋與篩選
+        function applyFilters() {
+            const term = (document.getElementById('searchInput').value || '').toLowerCase().trim();
             const category = document.getElementById('categoryFilter').value;
             const status = document.getElementById('statusFilter').value;
-            
-            let filteredRules = testRules;
-            
+
+            let filtered = Array.isArray(testRules) ? [...testRules] : [];
+
+            if (term) {
+                filtered = filtered.filter(rule => {
+                    const name = (rule.name || '').toLowerCase();
+                    const desc = (rule.description || '').toLowerCase();
+                    const steps = (rule.steps || '').toLowerCase();
+                    const expected = (rule.expected || '').toLowerCase();
+                    const notes = (rule.notes || '').toLowerCase();
+                    return (
+                        name.includes(term) ||
+                        desc.includes(term) ||
+                        steps.includes(term) ||
+                        expected.includes(term) ||
+                        notes.includes(term)
+                    );
+                });
+            }
+
             if (category) {
-                filteredRules = filteredRules.filter(rule => rule.category === category);
+                filtered = filtered.filter(rule => rule.category === category);
             }
-            
+
             if (status) {
-                filteredRules = filteredRules.filter(rule => rule.status === status);
+                filtered = filtered.filter(rule => rule.status === status);
             }
-            
-            displayRules(filteredRules);
+
+            displayRules(filtered);
         }
         
         // 新增規則
@@ -903,7 +914,7 @@
             testRules.push(newRule);
             saveData();
             updateStats();
-            displayRules();
+            applyFilters();
             document.getElementById('addRuleForm').reset();
             
             alert('測試規則新增成功！');
@@ -949,7 +960,7 @@
                 
                 saveData();
                 updateStats();
-                displayRules();
+                applyFilters();
                 closeEditModal();
                 alert('測試規則更新成功！');
             }
@@ -961,7 +972,7 @@
                 testRules = testRules.filter(rule => rule.id !== id);
                 saveData();
                 updateStats();
-                displayRules();
+                applyFilters();
                 alert('測試規則刪除成功！');
             }
         }
@@ -1017,7 +1028,7 @@
                                 nextId = data.nextId || testRules.length + 1;
                                 saveData();
                                 updateStats();
-                                displayRules();
+                                applyFilters();
                                 showSyncStatus('success', '數據上傳成功！');
                             } else {
                                 showSyncStatus('error', '數據格式不正確！');
@@ -1049,7 +1060,7 @@
                 localStorage.removeItem('qaLastSyncTime');
                 loadData();
                 updateStats();
-                displayRules();
+                applyFilters();
                 showSyncStatus('success', '本地數據已清除！');
             }
         }
@@ -1098,7 +1109,7 @@
                     localStorage.removeItem('qaNextId');
                     localStorage.removeItem('qaLastSyncTime');
                     updateStats();
-                    displayRules();
+                    applyFilters();
                     alert('所有數據已清除！');
                 }
             }
