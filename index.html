@@ -353,6 +353,10 @@
             font-size: 0.9em;
         }
         
+        .rule-details p {
+            white-space: pre-wrap;
+        }
+        
         .rule-details ul {
             margin-left: 20px;
             color: #6c757d;
@@ -770,12 +774,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
             updateStats();
-            applyFilters(); // 初次依目前搜尋與篩選值渲染
+            applyFilters();
             setupEventListeners();
             checkForUpdates();
         });
         
-        // 設定事件監聽器（統一用 applyFilters）
+        // 設定事件監聽器
         function setupEventListeners() {
             const searchInput = document.getElementById('searchInput');
             const categoryFilterEl = document.getElementById('categoryFilter');
@@ -818,7 +822,7 @@
             `;
         }
         
-        // 顯示規則
+        // 顯示規則（已加上 white-space: pre-wrap）
         function displayRules(rules = testRules) {
             const rulesGrid = document.getElementById('rulesGrid');
             const noResults = document.getElementById('noResults');
@@ -836,16 +840,16 @@
                         <div class="rule-title">${rule.name}</div>
                         <div class="rule-category ${rule.category}">${getCategoryName(rule.category)}</div>
                     </div>
-                    <div class="rule-description">${rule.description}</div>
+                    <div class="rule-description" style="white-space: pre-wrap;">${rule.description}</div>
                     <div class="rule-details">
                         <h4>測試步驟：</h4>
-                        <ul>${rule.steps.split('\n').map(step => `<li>${step}</li>`).join('')}</ul>
+                        <p style="white-space: pre-wrap;">${rule.steps}</p>
                     </div>
                     <div class="rule-details">
                         <h4>預期結果：</h4>
-                        <p>${rule.expected}</p>
+                        <p style="white-space: pre-wrap;">${rule.expected}</p>
                     </div>
-                    ${rule.notes ? `<div class="rule-details"><h4>備註：</h4><p>${rule.notes}</p></div>` : ''}
+                    ${rule.notes ? `<div class="rule-details"><h4>備註：</h4><p style="white-space: pre-wrap;">${rule.notes}</p></div>` : ''}
                     <div class="rule-details">
                         <h4>最後修改：</h4>
                         <p>${rule.lastModified ? new Date(rule.lastModified).toLocaleString() : '未知'} by ${rule.modifiedBy || '未知'}</p>
@@ -1047,7 +1051,6 @@
         // 檢查更新
         function checkForUpdates() {
             showSyncStatus('warning', '檢查更新中...');
-            // 這裡可以添加實際的更新檢查邏輯
             setTimeout(() => {
                 showSyncStatus('success', '已是最新版本！');
             }, 1000);
