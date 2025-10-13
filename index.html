@@ -607,6 +607,10 @@
                                 <option value="inactive">停用</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label>超連結（可選）</label>
+                            <input type="url" id="ruleLink" placeholder="例如：https://example.com">
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>規則描述 *</label>
@@ -669,6 +673,10 @@
                             <option value="active">啟用</option>
                             <option value="inactive">停用</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label>超連結（可選）</label>
+                        <input type="url" id="editRuleLink" placeholder="例如：https://example.com">
                     </div>
                 </div>
                 <div class="form-group">
@@ -753,7 +761,7 @@
                     }
                 ];
                 nextId = 4;
-             } 
+            } 
             if (savedNextId) {
                 nextId = parseInt(savedNextId);
             }
@@ -822,7 +830,7 @@
             `;
         }
         
-        // 顯示規則（已加上 white-space: pre-wrap）
+        // 顯示規則（含超連結）
         function displayRules(rules = testRules) {
             const rulesGrid = document.getElementById('rulesGrid');
             const noResults = document.getElementById('noResults');
@@ -850,6 +858,11 @@
                         <p style="white-space: pre-wrap;">${rule.expected}</p>
                     </div>
                     ${rule.notes ? `<div class="rule-details"><h4>備註：</h4><p style="white-space: pre-wrap;">${rule.notes}</p></div>` : ''}
+                    ${rule.link ? `
+                    <div class="rule-details">
+                        <h4>相關連結：</h4>
+                        <a href="${rule.link}" target="_blank" rel="noopener" style="display:inline-block;background:#0d6efd;color:#fff;padding:8px 12px;border-radius:6px;text-decoration:none;">🔗 開啟連結</a>
+                    </div>` : ''}
                     <div class="rule-details">
                         <h4>最後修改：</h4>
                         <p>${rule.lastModified ? new Date(rule.lastModified).toLocaleString() : '未知'} by ${rule.modifiedBy || '未知'}</p>
@@ -862,7 +875,7 @@
             `).join('');
         }
         
-        // 合併搜尋與篩選
+        // 合併搜尋與篩選（含連結）
         function applyFilters() {
             const term = (document.getElementById('searchInput').value || '').toLowerCase().trim();
             const category = document.getElementById('categoryFilter').value;
@@ -877,12 +890,14 @@
                     const steps = (rule.steps || '').toLowerCase();
                     const expected = (rule.expected || '').toLowerCase();
                     const notes = (rule.notes || '').toLowerCase();
+                    const link = (rule.link || '').toLowerCase();
                     return (
                         name.includes(term) ||
                         desc.includes(term) ||
                         steps.includes(term) ||
                         expected.includes(term) ||
-                        notes.includes(term)
+                        notes.includes(term) ||
+                        link.includes(term)
                     );
                 });
             }
@@ -907,6 +922,7 @@
                 name: document.getElementById('ruleName').value,
                 category: document.getElementById('ruleCategory').value,
                 status: document.getElementById('ruleStatus').value,
+                link: document.getElementById('ruleLink').value.trim(),
                 description: document.getElementById('ruleDescription').value,
                 steps: document.getElementById('ruleSteps').value,
                 expected: document.getElementById('ruleExpected').value,
@@ -934,6 +950,7 @@
             document.getElementById('editRuleName').value = rule.name;
             document.getElementById('editRuleCategory').value = rule.category;
             document.getElementById('editRuleStatus').value = rule.status;
+            document.getElementById('editRuleLink').value = rule.link || '';
             document.getElementById('editRuleDescription').value = rule.description;
             document.getElementById('editRuleSteps').value = rule.steps;
             document.getElementById('editRuleExpected').value = rule.expected;
@@ -955,6 +972,7 @@
                     name: document.getElementById('editRuleName').value,
                     category: document.getElementById('editRuleCategory').value,
                     status: document.getElementById('editRuleStatus').value,
+                    link: document.getElementById('editRuleLink').value.trim(),
                     description: document.getElementById('editRuleDescription').value,
                     steps: document.getElementById('editRuleSteps').value,
                     expected: document.getElementById('editRuleExpected').value,
