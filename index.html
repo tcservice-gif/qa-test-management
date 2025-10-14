@@ -300,7 +300,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             border: 2px solid #e9ecef;
             transition: all 0.3s ease;
-            min-height: 500px; /* 固定最小高度 */
+            height: 500px; /* 固定高度 */
             display: flex;
             flex-direction: column;
         }
@@ -313,9 +313,10 @@
         .rule-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start; /* 改為 flex-start 讓標題和類別對齊 */
+            align-items: flex-start;
             margin-bottom: 15px;
-            min-height: 40px; /* 固定標題區域高度 */
+            height: 50px; /* 固定標題區域高度 */
+            flex-shrink: 0;
         }
         
         .rule-title {
@@ -324,8 +325,8 @@
             color: #2c3e50;
             flex: 1;
             margin-right: 10px;
-            line-height: 1.4; /* 固定行距 */
-            max-height: 2.8em; /* 限制最多2行 */
+            line-height: 1.4;
+            height: 100%;
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -339,8 +340,9 @@
             border-radius: 20px;
             font-size: 0.8em;
             font-weight: bold;
-            white-space: nowrap; /* 防止類別標籤換行 */
-            flex-shrink: 0; /* 防止類別標籤被壓縮 */
+            white-space: nowrap;
+            flex-shrink: 0;
+            height: fit-content;
         }
         
         .rule-category.internal { background: #6f42c1; }
@@ -352,13 +354,12 @@
             margin-bottom: 15px;
             line-height: 1.6;
             white-space: pre-wrap;
-            flex: 1; /* 讓描述區域佔用剩餘空間 */
-            min-height: 60px; /* 最小高度 */
-            max-height: 120px; /* 最大高度 */
+            height: 80px; /* 固定描述區域高度 */
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 4;
             -webkit-box-orient: vertical;
+            flex-shrink: 0;
         }
         
         .rule-details {
@@ -366,7 +367,8 @@
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 15px;
-            min-height: 80px; /* 固定詳細資訊區域高度 */
+            height: 100px; /* 固定詳細資訊區域高度 */
+            flex-shrink: 0;
         }
         
         .rule-details h4 {
@@ -379,7 +381,7 @@
         .rule-details p {
             white-space: pre-wrap;
             line-height: 1.4;
-            max-height: 60px;
+            height: 60px;
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 3;
@@ -399,8 +401,11 @@
             display: flex;
             gap: 10px;
             justify-content: flex-end;
-            margin-top: auto; /* 讓按鈕區域固定在底部 */
+            margin-top: auto;
             padding-top: 15px;
+            height: 50px; /* 固定按鈕區域高度 */
+            align-items: center;
+            flex-shrink: 0;
         }
         
         .action-btn {
